@@ -1,5 +1,6 @@
 package com.smartsafetynetwork.api.repository.missingPerson;
 
+import com.smartsafetynetwork.api.common.DetailId;
 import com.smartsafetynetwork.api.domain.MissingPerson;
 import com.smartsafetynetwork.api.dto.missingPerson.response.MissingPersonDetailResponseDto;
 import com.smartsafetynetwork.api.dto.missingPerson.response.MissingPersonListResponseDto;

@@ -59,4 +59,12 @@ public class MissingPersonBoard {
 
     @LastModifiedDate
     private LocalDate updateAt;
+
+    public void modify(String title, String content, String address, String latitude, String longitude) {
+        this.title = title;
+        this.content = content;
+        this.address = address;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 }
