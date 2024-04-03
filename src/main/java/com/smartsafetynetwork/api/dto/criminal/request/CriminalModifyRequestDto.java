@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public class CriminalModifyRequestDto {
-    private String id;
-    private String criminalId;
+    private String user_id;
+    private String criminal_id;
     private String afterName;
     private String afterRegistrationPlace;
     private String afterAddress;

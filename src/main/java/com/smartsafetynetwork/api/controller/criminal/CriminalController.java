@@ -66,7 +66,7 @@ public class CriminalController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseMessage delete(@RequestBody RequestId requestId) {
-        return criminalService.delete(requestId);
+    public ResponseMessage delete(@RequestBody DetailId detailId) {
+        return criminalService.delete(detailId);
     }
 }

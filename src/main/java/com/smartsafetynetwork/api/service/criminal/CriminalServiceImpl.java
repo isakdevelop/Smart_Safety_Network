@@ -5,6 +5,7 @@ import com.smartsafetynetwork.api.component.ValidAdminComponent;
 import com.smartsafetynetwork.api.common.RequestId;
 import com.smartsafetynetwork.api.common.ResponseMessage;
 import com.smartsafetynetwork.api.component.ImageStorageComponent;
+import com.smartsafetynetwork.api.component.ValidUserComponent;
 import com.smartsafetynetwork.api.domain.Criminal;
 import com.smartsafetynetwork.api.domain.value.Error;
 import com.smartsafetynetwork.api.dto.criminal.request.CriminalModifyRequestDto;
@@ -25,6 +26,7 @@ public class CriminalServiceImpl implements CriminalService {
     private final CriminalRepository criminalRepository;
     private final ImageStorageComponent imageStorageComponent;
     private final ValidAdminComponent validAdminComponent;
+    private final ValidUserComponent validUserComponent;
 
     @Override
     public ResponseMessage write(CriminalWriteRequestDto requestDto) {
@@ -44,7 +46,7 @@ public class CriminalServiceImpl implements CriminalService {
                     .build();
 
             criminalRepository.save(criminal);
-            return new ResponseMessage(0, "범죄자 신상 등록에 성공하였습니다.");
+            return new ResponseMessage(200, "범죄자 신상 등록에 성공하였습니다.");
         } catch (IOException e) {
             throw new CustomException(Error.FORBIDDEN.getStatus(), "이미지 저장 중 오류가 발생했습니다.");
         }
@@ -57,25 +59,32 @@ public class CriminalServiceImpl implements CriminalService {
 
     @Override
     public CriminalDetailResponseDto detail(DetailId detailId) {
-        return criminalRepository.findDetailList(detailId.getId());
+        if (validUserComponent.isUser(detailId.getUser_id())) {
+            return criminalRepository.findDetailList(detailId.getWant_id());
+        } throw new CustomException(Error.NOT_FOUND.getStatus(), "사용자를 찾을 수 없습니다.");
     }
 
     @Override
     public ResponseMessage modify(CriminalModifyRequestDto criminalModifyRequestDto) {
-        Criminal criminal = criminalRepository.findById(criminalModifyRequestDto.getId())
-                .orElseThrow(() -> new CustomException(Error.NOT_FOUND.getStatus(), "해당하는 id가 존재하지 않습니다."));
+        if (validUserComponent.isUser(criminalModifyRequestDto.getUser_id())) {
+            Criminal criminal = criminalRepository.findById(criminalModifyRequestDto.getCriminal_id())
+                    .orElseThrow(() -> new CustomException(Error.NOT_FOUND.getStatus(), "해당 범죄자를 찾을 수 없습니다."));
 
-        criminal.modify(criminalModifyRequestDto.getAfterName(), criminalModifyRequestDto.getAfterRegistrationPlace(),
-                criminalModifyRequestDto.getAfterAddress(), criminalModifyRequestDto.getAfterCrime());
-        return new ResponseMessage(0, "수정에 성공하였습니다.");
+            criminal.modify(criminalModifyRequestDto.getAfterName(),
+                    criminalModifyRequestDto.getAfterRegistrationPlace(),
+                    criminalModifyRequestDto.getAfterAddress(), criminalModifyRequestDto.getAfterCrime());
+            return new ResponseMessage(200, "수정에 성공하였습니다.");
+        } throw new CustomException(Error.NOT_FOUND.getStatus(), "사용자를 찾을 수 없습니다.");
     }
 
     @Override
-    public ResponseMessage delete(RequestId requestId) {
-        Criminal criminal = criminalRepository.findById(requestId.getId())
-                .orElseThrow(() -> new CustomException(Error.NOT_FOUND.getStatus(), Error.NOT_FOUND.getMessage()));
+    public ResponseMessage delete(DetailId detailId) {
+        if (validUserComponent.isUser(detailId.getUser_id())) {
+            Criminal criminal = criminalRepository.findById(detailId.getWant_id())
+                    .orElseThrow(() -> new CustomException(Error.NOT_FOUND.getStatus(), "해당 범죄자를 찾을 수 없습니다."));
 
-        criminalRepository.deleteById(criminal.getId());
-        return new ResponseMessage(0, "삭제에 성공하였습니다.");
+            criminalRepository.deleteById(criminal.getId());
+            return new ResponseMessage(0, "삭제에 성공하였습니다.");
+        } throw new CustomException(Error.NOT_FOUND.getStatus(), "사용자를 찾을 수 없습니다.");
     }
 }

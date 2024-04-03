@@ -1,7 +1,6 @@
 package com.smartsafetynetwork.api.service.criminal;
 
 import com.smartsafetynetwork.api.common.DetailId;
-import com.smartsafetynetwork.api.common.RequestId;
 import com.smartsafetynetwork.api.common.ResponseMessage;
 import com.smartsafetynetwork.api.dto.criminal.request.CriminalModifyRequestDto;
 import com.smartsafetynetwork.api.dto.criminal.request.CriminalWriteRequestDto;
@@ -19,5 +18,5 @@ public interface CriminalService {
 
     ResponseMessage modify(CriminalModifyRequestDto criminalModifyRequestDto);
 
-    ResponseMessage delete(RequestId requestId);
+    ResponseMessage delete(DetailId detailId);
 }
