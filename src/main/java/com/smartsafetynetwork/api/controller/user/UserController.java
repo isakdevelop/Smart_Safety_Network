@@ -1,13 +1,10 @@
 package com.smartsafetynetwork.api.controller.user;
 
-import com.smartsafetynetwork.api.common.RequestId;
-import com.smartsafetynetwork.api.common.ResponseMessage;
-import com.smartsafetynetwork.api.dto.user.request.UserMailRequestDto;
-import com.smartsafetynetwork.api.dto.user.request.UserModifyRequestDto;
-import com.smartsafetynetwork.api.dto.user.request.UserSignupRequestDto;
-import com.smartsafetynetwork.api.dto.user.request.UserLoginRequestDto;
-import com.smartsafetynetwork.api.dto.user.response.UserInfoResponseDto;
-import com.smartsafetynetwork.api.dto.user.response.UserLoginResponseDto;
+import com.smartsafetynetwork.api.dto.ResponseDto;
+import com.smartsafetynetwork.api.dto.user.request.UserRequestDto;
+import com.smartsafetynetwork.api.common.dto.CommonLoginRequestDto;
+import com.smartsafetynetwork.api.common.dto.CommonLoginResponseDto;
+import com.smartsafetynetwork.api.dto.user.response.UserResponseDto;
 import com.smartsafetynetwork.api.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,33 +21,33 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public ResponseMessage signup(@RequestBody UserSignupRequestDto userSignupRequestDto) {
-        return userService.signup(userSignupRequestDto);
+    public ResponseDto signup(@RequestBody UserRequestDto userRequestDto) {
+        return userService.signup(userRequestDto);
     }
 
     @PostMapping("/login")
-    public UserLoginResponseDto signup(@RequestBody UserLoginRequestDto userLoginRequestDto) {
-        return userService.login(userLoginRequestDto);
+    public CommonLoginResponseDto signup(@RequestBody CommonLoginRequestDto commonLoginRequestDto) {
+        return userService.login(commonLoginRequestDto);
     }
 
     @PostMapping("/info")
-    public UserInfoResponseDto info(@RequestBody RequestId requestId) {
-        return userService.info(requestId);
+    public UserResponseDto info(@RequestBody UserRequestDto userRequestDto) {
+        return userService.info(userRequestDto);
     }
 
     @PatchMapping("/modify")
-    public ResponseMessage modify(@RequestBody UserModifyRequestDto userModifyRequestDto) {
-        return userService.modify(userModifyRequestDto);
+    public ResponseDto modify(@RequestBody UserRequestDto userRequestDto) {
+        return userService.modify(userRequestDto);
     }
 
     @PostMapping("/mail")
-    public ResponseMessage sendMailPassword(@RequestBody UserMailRequestDto userMailRequestDto) {
-        return userService.sendMailPassword(userMailRequestDto);
+    public ResponseDto sendMailPassword(@RequestBody UserRequestDto userRequestDto) {
+        return userService.sendMailPassword(userRequestDto);
     }
 
     @DeleteMapping("/delete")
-    public ResponseMessage delete(@RequestBody RequestId requestId) {
-        return userService.delete(requestId);
+    public ResponseDto delete(@RequestBody UserRequestDto userRequestDto) {
+        return userService.delete(userRequestDto);
     }
 }
 

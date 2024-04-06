@@ -1,11 +1,10 @@
 package com.smartsafetynetwork.api.dto.user.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
-public class UserSignupRequestDto {
+public class UserRequestDto {
+    private String id;
     private String username;
     private String password;
     private String name;

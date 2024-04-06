@@ -2,15 +2,15 @@ package com.smartsafetynetwork.api.service.user;
 
 import com.smartsafetynetwork.api.common.RandomPasswordGenerator;
 import com.smartsafetynetwork.api.common.RequestId;
-import com.smartsafetynetwork.api.common.ResponseMessage;
+import com.smartsafetynetwork.api.component.JWTProvider;
+import com.smartsafetynetwork.api.domain.value.Role;
+import com.smartsafetynetwork.api.dto.ResponseDto;
 import com.smartsafetynetwork.api.domain.User;
 import com.smartsafetynetwork.api.domain.value.Error;
-import com.smartsafetynetwork.api.dto.user.request.UserMailRequestDto;
-import com.smartsafetynetwork.api.dto.user.request.UserModifyRequestDto;
-import com.smartsafetynetwork.api.dto.user.request.UserSignupRequestDto;
-import com.smartsafetynetwork.api.dto.user.request.UserLoginRequestDto;
-import com.smartsafetynetwork.api.dto.user.response.UserInfoResponseDto;
-import com.smartsafetynetwork.api.dto.user.response.UserLoginResponseDto;
+import com.smartsafetynetwork.api.dto.user.request.UserRequestDto;
+import com.smartsafetynetwork.api.common.dto.CommonLoginRequestDto;
+import com.smartsafetynetwork.api.common.dto.CommonLoginResponseDto;
+import com.smartsafetynetwork.api.dto.user.response.UserResponseDto;
 import com.smartsafetynetwork.api.exception.CustomException;
 import com.smartsafetynetwork.api.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,84 +26,94 @@ public class UserServiceImpl implements UserService{
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender javaMailSender;
     private final SimpleMailMessage simpleMailMessage;
+    private final JWTProvider jwtProvider;
 
     @Override
-    public ResponseMessage signup(UserSignupRequestDto userSignupRequestDto) {
-        if (userRepository.existsByUsername(userSignupRequestDto.getUsername())) {
+    public ResponseDto signup(UserRequestDto userRequestDto) {
+        if (userRepository.existsByUsername(userRequestDto.getUsername())) {
             throw new CustomException(Error.CONFLICT.getStatus(), "이미 존재하는 아이디 입니다.");
         }
 
-        if (userRepository.existsByEmail(userSignupRequestDto.getEmail())) {
+        if (userRepository.existsByEmail(userRequestDto.getEmail())) {
             throw new CustomException(Error.CONFLICT.getStatus(), "이미 존재하는 이메일 입니다.");
         }
 
-        if (userRepository.existsByPhone(userSignupRequestDto.getPhone())) {
+        if (userRepository.existsByPhone(userRequestDto.getPhone())) {
             throw new CustomException(Error.CONFLICT.getStatus(), "이미 존재하는 전화번호 입니다.");
         }
         User user = User.builder()
-                .username(userSignupRequestDto.getUsername())
-                .password(passwordEncoder.encode(userSignupRequestDto.getPassword()))
-                .name(userSignupRequestDto.getName())
-                .gender(userSignupRequestDto.getGender())
-                .birthday(userSignupRequestDto.getBirthday())
-                .phone(userSignupRequestDto.getPhone())
-                .email(userSignupRequestDto.getEmail())
+                .username(userRequestDto.getUsername())
+                .password(passwordEncoder.encode(userRequestDto.getPassword()))
+                .name(userRequestDto.getName())
+                .gender(userRequestDto.getGender())
+                .birthday(userRequestDto.getBirthday())
+                .phone(userRequestDto.getPhone())
+                .email(userRequestDto.getEmail())
+                .role(Role.ROLE_USER)
                 .build();
 
-        if (userRepository.findByUsername(userSignupRequestDto.getUsername()).isEmpty()) {
+        if (userRepository.findByUsername(user.getUsername()).isEmpty()) {
             userRepository.save(user);
-            return new ResponseMessage(0, "회원가입에 성공하셨습니다.");
+            return new ResponseDto(0, "회원가입에 성공하셨습니다.");
         } else {
             throw new CustomException(Error.CONFLICT.getStatus(), Error.CONFLICT.getMessage());
         }
     }
 
     @Override
-    public UserLoginResponseDto login(UserLoginRequestDto userLoginRequestDto) {
-        User user = userRepository.findByUsername(userLoginRequestDto.getUsername())
+    public CommonLoginResponseDto login(CommonLoginRequestDto commonLoginRequestDto) {
+        User user = userRepository.findByUsername(commonLoginRequestDto.getUsername())
                 .orElseThrow(() -> new CustomException(Error.NOT_FOUND.getStatus(), Error.NOT_FOUND.getMessage()));
 
-        if (passwordEncoder.matches(userLoginRequestDto.getPassword(), user.getPassword())) {
-            return new UserLoginResponseDto(user.getId(), user.getName());
+        if (passwordEncoder.matches(commonLoginRequestDto.getPassword(), user.getPassword())) {
+            String token = jwtProvider.create(user.getId());
+            return new CommonLoginResponseDto(200, "로그인에 성공하셨습니다.", token, 3600, user.getId());
         } else {
             throw new CustomException(Error.NOT_FOUND.getStatus(), Error.NOT_FOUND.getMessage());
         }
     }
 
     @Override
-    public ResponseMessage modify(UserModifyRequestDto userModifyRequestDto) {
-        User user = userRepository.findById(userModifyRequestDto.getId())
+    public ResponseDto modify(UserRequestDto userRequestDto) {
+        User user = userRepository.findById(userRequestDto.getId())
                 .orElseThrow(() -> new CustomException(Error.NOT_FOUND.getStatus(), Error.NOT_FOUND.getMessage()));
 
-        user.update(userModifyRequestDto.getAfterEmail(), userModifyRequestDto.getAfterPhone());
+        user.update(userRequestDto.getEmail(), userRequestDto.getPhone());
         userRepository.save(user);
 
-        return new ResponseMessage(0, "회원 정보 수정이 완료 되었습니다.");
+        return new ResponseDto(0, "회원 정보 수정이 완료 되었습니다.");
     }
 
     @Override
-    public UserInfoResponseDto info(RequestId requestId) {
-        User user = userRepository.findById(requestId.getId())
+    public UserResponseDto info(UserRequestDto userRequestDto) {
+        User user = userRepository.findById(userRequestDto.getId())
                 .orElseThrow(() -> new CustomException(Error.NOT_FOUND.getStatus(), Error.NOT_FOUND.getMessage()));
 
-        return new UserInfoResponseDto(user.getName(), user.getBirthday(), user.getGender(), user.getEmail(),
-                user.getPhone());
+        return UserResponseDto.builder()
+                .name(user.getName())
+                .birthday(user.getBirthday())
+                .gender(user.getGender())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .status(200)
+                .message("사용자 정보 조회에 성공하셨습니다.")
+                .build();
     }
 
     @Override
-    public ResponseMessage delete(RequestId requestId) {
-        User user = userRepository.findById(requestId.getId())
+    public ResponseDto delete(UserRequestDto userRequestDto) {
+        User user = userRepository.findById(userRequestDto.getId())
                         .orElseThrow(() -> new CustomException(Error.NOT_FOUND.getStatus(), Error.NOT_FOUND.getMessage()));
         userRepository.deleteById(user.getId());
-        return new ResponseMessage(200, "회원 탈퇴가 완료 되었습니다.");
+        return new ResponseDto(200, "회원 탈퇴가 완료 되었습니다.");
     }
 
     @Override
-    public ResponseMessage sendMailPassword(UserMailRequestDto userMailRequestDto) {
-        User user = userRepository.findByUsername(userMailRequestDto.getUsername())
+    public ResponseDto sendMailPassword(UserRequestDto userRequestDto) {
+        User user = userRepository.findByUsername(userRequestDto.getUsername())
                 .orElseThrow(() -> new CustomException(Error.NOT_FOUND.getStatus(), Error.NOT_FOUND.getMessage()));
 
-        if (!user.getEmail().equals(userMailRequestDto.getEmail())) {
+        if (!user.getEmail().equals(user.getEmail())) {
             throw new CustomException(Error.NOT_FOUND.getStatus(), "사용자의 이메일 주소가 일치하지 않습니다.");
         }
 
@@ -114,7 +124,7 @@ public class UserServiceImpl implements UserService{
         user.changedPasswordByEmail(passwordEncoder.encode(password));
         userRepository.save(user);
 
-        return new ResponseMessage(0, "메일 발송이 완료되었습니다.");
+        return new ResponseDto(0, "메일 발송이 완료되었습니다.");
     }
 
     private void sendPasswordResetEmail(String email, String password) {

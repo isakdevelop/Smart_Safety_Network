@@ -1,14 +1,12 @@
 package com.smartsafetynetwork.api.domain;
 
+import com.smartsafetynetwork.api.common.BaseEntity;
+import com.smartsafetynetwork.api.domain.value.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -16,20 +14,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity(name = "users")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
 @Builder
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+public class User extends BaseEntity {
 
     @Column(name = "username", unique = true, nullable = false)
     private String username;
@@ -52,12 +43,9 @@ public class User {
     @Column(name = "phone", unique = true, nullable = false)
     private String phone;
 
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createAt;
-
-    @LastModifiedDate
-    private LocalDate updateAt;
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @OneToMany(mappedBy = "user")
     private List<VulnerableRegin> vulnerableRegins = new ArrayList<>();

@@ -1,24 +1,22 @@
 package com.smartsafetynetwork.api.service.user;
 
 import com.smartsafetynetwork.api.common.RequestId;
-import com.smartsafetynetwork.api.common.ResponseMessage;
-import com.smartsafetynetwork.api.dto.user.request.UserMailRequestDto;
-import com.smartsafetynetwork.api.dto.user.request.UserModifyRequestDto;
-import com.smartsafetynetwork.api.dto.user.request.UserSignupRequestDto;
-import com.smartsafetynetwork.api.dto.user.request.UserLoginRequestDto;
-import com.smartsafetynetwork.api.dto.user.response.UserInfoResponseDto;
-import com.smartsafetynetwork.api.dto.user.response.UserLoginResponseDto;
+import com.smartsafetynetwork.api.dto.ResponseDto;
+import com.smartsafetynetwork.api.dto.user.request.UserRequestDto;
+import com.smartsafetynetwork.api.common.dto.CommonLoginRequestDto;
+import com.smartsafetynetwork.api.common.dto.CommonLoginResponseDto;
+import com.smartsafetynetwork.api.dto.user.response.UserResponseDto;
 
 public interface UserService {
-    ResponseMessage signup(UserSignupRequestDto userSignupRequestDto);
+    ResponseDto signup(UserRequestDto userRequestDto);
 
-    UserLoginResponseDto login(UserLoginRequestDto userLoginRequestDto);
+    CommonLoginResponseDto login(CommonLoginRequestDto commonLoginRequestDto);
 
-    ResponseMessage modify(UserModifyRequestDto userModifyRequestDto);
+    ResponseDto modify(UserRequestDto userRequestDto);
 
-    UserInfoResponseDto info(RequestId requestId);
+    UserResponseDto info(UserRequestDto userRequestDto);
 
-    ResponseMessage delete(RequestId requestId);
+    ResponseDto delete(UserRequestDto userRequestDto);
 
-    ResponseMessage sendMailPassword(UserMailRequestDto userMailRequestDto);
+    ResponseDto sendMailPassword(UserRequestDto userRequestDto);
 }
