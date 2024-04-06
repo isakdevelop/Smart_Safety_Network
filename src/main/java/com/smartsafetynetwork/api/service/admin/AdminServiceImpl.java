@@ -1,14 +1,15 @@
 package com.smartsafetynetwork.api.service.admin;
 
 import com.smartsafetynetwork.api.common.RequestId;
-import com.smartsafetynetwork.api.common.ResponseMessage;
+import com.smartsafetynetwork.api.common.dto.CommonLoginRequestDto;
+import com.smartsafetynetwork.api.common.dto.CommonLoginResponseDto;
+import com.smartsafetynetwork.api.component.JWTProvider;
+import com.smartsafetynetwork.api.domain.value.Role;
+import com.smartsafetynetwork.api.dto.ResponseDto;
 import com.smartsafetynetwork.api.domain.Admin;
 import com.smartsafetynetwork.api.domain.value.Error;
-import com.smartsafetynetwork.api.dto.admin.request.AdminLoginRequestDto;
-import com.smartsafetynetwork.api.dto.admin.request.AdminModifyRequestDto;
-import com.smartsafetynetwork.api.dto.admin.request.AdminSignupRequestDto;
-import com.smartsafetynetwork.api.dto.admin.response.AdminInfoResponseDto;
-import com.smartsafetynetwork.api.dto.admin.response.AdminLoginResponseDto;
+import com.smartsafetynetwork.api.dto.admin.request.AdminRequestDto;
+import com.smartsafetynetwork.api.dto.admin.response.AdminResponseDto;
 import com.smartsafetynetwork.api.exception.CustomException;
 import com.smartsafetynetwork.api.repository.admin.AdminRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,52 +21,75 @@ import org.springframework.stereotype.Service;
 public class AdminServiceImpl implements AdminService{
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JWTProvider jwtProvider;
 
     @Override
-    public ResponseMessage signup(AdminSignupRequestDto adminSignupRequestDto) {
+    public ResponseDto signup(AdminRequestDto adminRequestDto) {
         Admin admin = Admin.builder()
-                .policeNumber(adminSignupRequestDto.getPoliceNumber())
-                .password(adminSignupRequestDto.getPassword())
-                .name(adminSignupRequestDto.getName())
-                .phone(adminSignupRequestDto.getPhone())
-                .company(adminSignupRequestDto.getCompany())
-                .department(adminSignupRequestDto.getDepartment())
+                .policeNumber(adminRequestDto.getPoliceNumber())
+                .password(adminRequestDto.getPassword())
+                .name(adminRequestDto.getName())
+                .phone(adminRequestDto.getPhone())
+                .company(adminRequestDto.getCompany())
+                .department(adminRequestDto.getDepartment())
+                .role(Role.ROLE_ADMIN)
                 .build();
 
-        if (adminRepository.findByPoliceNumber(adminSignupRequestDto.getPoliceNumber()).isEmpty()) {
+        if (adminRepository.findByPoliceNumber(adminRequestDto.getPoliceNumber()).isEmpty()) {
             adminRepository.save(admin);
-            return new ResponseMessage(0, "회원 가입에 성공하셨습니다.");
+            return new ResponseDto(0, "회원 가입에 성공하셨습니다.");
         } else {
             throw new CustomException(Error.CONFLICT.getStatus(), "이미 존재하는 경찰 번호 입니다.");
         }
     }
 
     @Override
-    public AdminLoginResponseDto login(AdminLoginRequestDto adminLoginRequestDto) {
-        Admin admin = adminRepository.findByPoliceNumber(adminLoginRequestDto.getPoliceNumber())
+    public CommonLoginResponseDto login(CommonLoginRequestDto commonLoginRequestDto) {
+        Admin admin = adminRepository.findByPoliceNumber(commonLoginRequestDto.getUsername())
                 .orElseThrow(() -> new CustomException(Error.NOT_FOUND.getStatus(), "존재하지 않는 경찰 번호 입니다."));
 
-        if (passwordEncoder.matches(adminLoginRequestDto.getPassword(), admin.getPassword())) {
-            return new AdminLoginResponseDto(admin.getId(), admin.getName());
+        if (passwordEncoder.matches(commonLoginRequestDto.getPassword(), admin.getPassword())) {
+            String token = jwtProvider.create(admin.getId());
+            return new CommonLoginResponseDto(200, "로그인에 성공하셨습니다.", token, 3600, admin.getId());
         } else {
             throw new CustomException(Error.NOT_FOUND.getStatus(), "비밀번호가 틀렸습니다!");
         }
     }
 
     @Override
-    public AdminInfoResponseDto info(RequestId requestId) {
-        Admin admin = adminRepository.findById(requestId.getId())
-                .orElseThrow(() -> new CustomException(Error.NOT_FOUND.getStatus(), Error.NOT_FOUND.getMessage()));
+    public AdminResponseDto info(AdminRequestDto adminRequestDto) {
+        Admin admin = adminRepository.findById(adminRequestDto.getId())
+                .orElseThrow(() -> new CustomException(Error.NOT_FOUND.getStatus(), "관리자 정보를 찾을 수 없습니다."));
 
-        return new AdminInfoResponseDto(admin.getName(), admin.getPhone(), admin.getCompany(), admin.getDepartment());
+        return AdminResponseDto.builder()
+                .name(admin.getName())
+                .phone(admin.getPhone())
+                .company(admin.getCompany())
+                .department(admin.getDepartment())
+                .status(200)
+                .message("관리자 정보를 성공적으로 가져왔습니다.")
+                .build();
     }
 
     @Override
-    public ResponseMessage modify(AdminModifyRequestDto adminModifyRequestDto) {
-        Admin admin = adminRepository.findById(adminModifyRequestDto.getId())
+    public ResponseDto modify(AdminRequestDto adminRequestDto) {
+        Admin admin = adminRepository.findById(adminRequestDto.getId())
                 .orElseThrow(() -> new CustomException(Error.NOT_FOUND.getStatus(), Error.NOT_FOUND.getMessage()));
-        admin.modify(adminModifyRequestDto.getName(), adminModifyRequestDto.getPhone(),
-                adminModifyRequestDto.getCompany(), adminModifyRequestDto.getDepartment());
-        return new ResponseMessage(0, "관리자 정보 변경이 완료되었습니다.");
+
+        admin.modify(adminRequestDto.getName(), adminRequestDto.getPhone(), adminRequestDto.getCompany(),
+                adminRequestDto.getDepartment());
+        adminRepository.save(admin);
+
+        return new ResponseDto(200, "관리자 정보 수정이 완료되었습니다.");
     }
+
+    @Override
+    public ResponseDto delete(AdminRequestDto adminRequestDto) {
+        Admin admin = adminRepository.findById(adminRequestDto.getId())
+                .orElseThrow(() -> new CustomException(Error.NOT_FOUND.getStatus(), Error.NOT_FOUND.getMessage()));
+
+        adminRepository.deleteById(admin.getId());
+        return new ResponseDto(200, "회원 탈퇴가 완료되었습니다.");
+    }
+
 }

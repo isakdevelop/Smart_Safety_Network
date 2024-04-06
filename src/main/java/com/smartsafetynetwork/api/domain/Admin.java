@@ -1,8 +1,12 @@
 package com.smartsafetynetwork.api.domain;
 
+import com.smartsafetynetwork.api.common.BaseEntity;
+import com.smartsafetynetwork.api.domain.value.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,12 +25,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
 @Builder
-public class Admin {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+public class Admin extends BaseEntity {
 
     @Column(name = "police_number", nullable = false, updatable = false, unique = true)
     private String policeNumber;
@@ -46,12 +46,9 @@ public class Admin {
     @Column(name = "department", nullable = false)
     private String department;
 
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createAt;
-
-    @LastModifiedDate
-    private LocalDate updateAt;
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     public void modify(String name, String phone, String company, String department) {
         this.name = name;

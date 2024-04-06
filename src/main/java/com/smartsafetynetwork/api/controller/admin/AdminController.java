@@ -1,14 +1,14 @@
 package com.smartsafetynetwork.api.controller.admin;
 
-import com.smartsafetynetwork.api.common.RequestId;
-import com.smartsafetynetwork.api.common.ResponseMessage;
-import com.smartsafetynetwork.api.dto.admin.request.AdminLoginRequestDto;
-import com.smartsafetynetwork.api.dto.admin.request.AdminModifyRequestDto;
-import com.smartsafetynetwork.api.dto.admin.request.AdminSignupRequestDto;
-import com.smartsafetynetwork.api.dto.admin.response.AdminInfoResponseDto;
-import com.smartsafetynetwork.api.dto.admin.response.AdminLoginResponseDto;
+import com.smartsafetynetwork.api.common.dto.CommonLoginRequestDto;
+import com.smartsafetynetwork.api.common.dto.CommonLoginResponseDto;
+import com.smartsafetynetwork.api.dto.ResponseDto;
+import com.smartsafetynetwork.api.dto.admin.request.AdminRequestDto;
+import com.smartsafetynetwork.api.dto.admin.response.AdminResponseDto;
 import com.smartsafetynetwork.api.service.admin.AdminService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,23 +21,28 @@ public class AdminController {
     private final AdminService adminService;
 
     @PostMapping("/signup")
-    public ResponseMessage signup(@RequestBody AdminSignupRequestDto adminSignupRequestDto) {
-        return adminService.signup(adminSignupRequestDto);
+    public ResponseDto signup(@RequestBody AdminRequestDto adminRequestDto) {
+        return adminService.signup(adminRequestDto);
     }
 
     @PostMapping("/login")
-    public AdminLoginResponseDto login(@RequestBody AdminLoginRequestDto adminLoginRequestDto) {
-        return adminService.login(adminLoginRequestDto);
+    public CommonLoginResponseDto login(@RequestBody CommonLoginRequestDto commonLoginRequestDto) {
+        return adminService.login(commonLoginRequestDto);
     }
 
     @PostMapping("/info")
-    public AdminInfoResponseDto info(@RequestBody RequestId requestId) {
-        return adminService.info(requestId);
+    public AdminResponseDto info(@RequestBody AdminRequestDto adminRequestDto) {
+        return adminService.info(adminRequestDto);
     }
 
-    @PostMapping("/modify")
-    public ResponseMessage modify(@RequestBody AdminModifyRequestDto adminModifyRequestDto) {
-        return adminService.modify(adminModifyRequestDto);
+    @PatchMapping("/modify")
+    public ResponseDto modify(@RequestBody AdminRequestDto adminRequestDto) {
+        return adminService.modify(adminRequestDto);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseDto delete(@RequestBody AdminRequestDto adminRequestDto) {
+        return adminService.delete(adminRequestDto);
     }
 
 }
