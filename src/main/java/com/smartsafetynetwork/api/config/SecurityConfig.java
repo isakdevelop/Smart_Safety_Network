@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/user/login", "/user/signup", "/user/mail").permitAll()
+                        .requestMatchers("/", "/user/login", "/user/signup", "/user/mail", "/admin/signup", "/admin/login").permitAll()
                         .requestMatchers("/user/info", "/user/modify", "/user/delete").hasRole("USER")
                         .requestMatchers("/criminal/write", "/criminal/modify", "/criminal/delete",
                                 "/mp/write", "/mp/modify", "/mp/delete").hasRole("ADMIN")

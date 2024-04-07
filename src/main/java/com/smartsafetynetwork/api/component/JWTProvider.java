@@ -18,7 +18,7 @@ public class JWTProvider {
     private String secretKey;
 
     public String create(String id) {
-        Instant expiredDate = Instant.now().plus(1, ChronoUnit.HOURS);
+        Instant expiredDate = Instant.now().plus(3, ChronoUnit.HOURS);
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
         String jwt = Jwts.builder()
