@@ -1,7 +1,7 @@
 package com.smartsafetynetwork.api.controller.missingPersonBoard;
 
 import com.smartsafetynetwork.api.common.DetailId;
-import com.smartsafetynetwork.api.common.ResponseMessage;
+import com.smartsafetynetwork.api.dto.ResponseDto;
 import com.smartsafetynetwork.api.dto.missingPersonBoard.request.MPBModifyRequestDto;
 import com.smartsafetynetwork.api.dto.missingPersonBoard.request.MPBWriteRequestDto;
 import com.smartsafetynetwork.api.dto.missingPersonBoard.response.MPBDetailResponseDto;
@@ -20,12 +20,12 @@ public class MissingPersonBoardController {
     private final MissingPersonBoardService missingPersonBoardService;
 
     @PostMapping("/write")
-    ResponseMessage write(@RequestBody MPBWriteRequestDto mpbWriteRequestDto) {
+    ResponseDto write(@RequestBody MPBWriteRequestDto mpbWriteRequestDto) {
         return missingPersonBoardService.write(mpbWriteRequestDto);
     }
 
     @PatchMapping("/modify")
-    ResponseMessage write(@RequestBody MPBModifyRequestDto mpbModifyRequestDto) {
+    ResponseDto write(@RequestBody MPBModifyRequestDto mpbModifyRequestDto) {
         return missingPersonBoardService.modify(mpbModifyRequestDto);
     }
 

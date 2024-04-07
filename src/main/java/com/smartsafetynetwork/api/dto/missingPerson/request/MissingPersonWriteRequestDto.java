@@ -16,8 +16,8 @@ public class MissingPersonWriteRequestDto {
     private String latitude;
     private String longitude;
     private String address;
-    private String height;
-    private String weight;
+    private Double height;
+    private Double weight;
     private String physique;
     private String faceShape;
     private String hairColor;

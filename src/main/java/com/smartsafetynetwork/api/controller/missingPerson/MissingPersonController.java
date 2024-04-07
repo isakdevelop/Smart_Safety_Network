@@ -1,10 +1,8 @@
 package com.smartsafetynetwork.api.controller.missingPerson;
 
 import com.smartsafetynetwork.api.common.RequestId;
-import com.smartsafetynetwork.api.common.ResponseMessage;
-import com.smartsafetynetwork.api.dto.criminal.response.CriminalListResponseDto;
+import com.smartsafetynetwork.api.dto.ResponseDto;
 import com.smartsafetynetwork.api.dto.missingPerson.request.MissingPersonWriteRequestDto;
-import com.smartsafetynetwork.api.dto.missingPerson.request.ReportRequestDto;
 import com.smartsafetynetwork.api.dto.missingPerson.response.MissingPersonDetailResponseDto;
 import com.smartsafetynetwork.api.dto.missingPerson.response.MissingPersonListResponseDto;
 import com.smartsafetynetwork.api.service.missingPerson.MissingPersonService;
@@ -28,24 +26,24 @@ import org.springframework.web.multipart.MultipartFile;
 public class MissingPersonController {
     private final MissingPersonService missingPersonService;
 
-    @PostMapping("/admin/write")
-    public ResponseMessage write(@RequestParam String id,
-                                 @RequestParam String name,
-                                 @RequestParam String gender,
-                                 @RequestParam int age,
-                                 @RequestParam String location,
-                                 @RequestParam String date,
-                                 @RequestParam String latitude,
-                                 @RequestParam String longitude,
-                                 @RequestParam String address,
-                                 @RequestParam String height,
-                                 @RequestParam String weight,
-                                 @RequestParam String physique,
-                                 @RequestParam String faceShape,
-                                 @RequestParam String hairColor,
-                                 @RequestParam String hairShape,
-                                 @RequestParam String cloth,
-                                 @RequestParam(required = false) MultipartFile image) {
+    @PostMapping("/write")
+    public ResponseDto write(@RequestParam String id,
+                             @RequestParam String name,
+                             @RequestParam String gender,
+                             @RequestParam int age,
+                             @RequestParam String location,
+                             @RequestParam String date,
+                             @RequestParam String latitude,
+                             @RequestParam String longitude,
+                             @RequestParam String address,
+                             @RequestParam Double height,
+                             @RequestParam Double weight,
+                             @RequestParam String physique,
+                             @RequestParam String faceShape,
+                             @RequestParam String hairColor,
+                             @RequestParam String hairShape,
+                             @RequestParam String cloth,
+                             @RequestParam(required = false) MultipartFile image) {
         MissingPersonWriteRequestDto requestDto = MissingPersonWriteRequestDto.builder()
                 .id(id)
                 .name(name)
@@ -79,14 +77,8 @@ public class MissingPersonController {
         return missingPersonService.detail(requestId);
     }
 
-//    @PostMapping("/user/report")
-//    public ResponseMessage report(@RequestBody ReportRequestDto reportRequestDto) {
-//
-//
-//    }
-
-    @DeleteMapping("/admin/delete")
-    public ResponseMessage delete(@RequestBody RequestId requestId) {
+    @DeleteMapping("/delete")
+    public ResponseDto delete(@RequestBody RequestId requestId) {
         return missingPersonService.delete(requestId);
     }
 }

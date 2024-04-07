@@ -1,7 +1,7 @@
 package com.smartsafetynetwork.api.service.criminal;
 
 import com.smartsafetynetwork.api.common.DetailId;
-import com.smartsafetynetwork.api.common.ResponseMessage;
+import com.smartsafetynetwork.api.dto.ResponseDto;
 import com.smartsafetynetwork.api.dto.criminal.request.CriminalModifyRequestDto;
 import com.smartsafetynetwork.api.dto.criminal.request.CriminalWriteRequestDto;
 import com.smartsafetynetwork.api.dto.criminal.response.CriminalDetailResponseDto;
@@ -10,13 +10,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface CriminalService {
-    ResponseMessage write(CriminalWriteRequestDto criminalWriteRequestDto);
+    ResponseDto write(CriminalWriteRequestDto criminalWriteRequestDto);
 
     Page<CriminalListResponseDto> list(Pageable pageable);
 
     CriminalDetailResponseDto detail(DetailId detailId);
 
-    ResponseMessage modify(CriminalModifyRequestDto criminalModifyRequestDto);
+    ResponseDto modify(CriminalModifyRequestDto criminalModifyRequestDto);
 
-    ResponseMessage delete(DetailId detailId);
+    ResponseDto delete(DetailId detailId);
 }

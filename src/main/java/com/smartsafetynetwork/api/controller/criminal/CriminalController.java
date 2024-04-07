@@ -1,8 +1,7 @@
 package com.smartsafetynetwork.api.controller.criminal;
 
 import com.smartsafetynetwork.api.common.DetailId;
-import com.smartsafetynetwork.api.common.RequestId;
-import com.smartsafetynetwork.api.common.ResponseMessage;
+import com.smartsafetynetwork.api.dto.ResponseDto;
 import com.smartsafetynetwork.api.dto.criminal.request.CriminalModifyRequestDto;
 import com.smartsafetynetwork.api.dto.criminal.request.CriminalWriteRequestDto;
 import com.smartsafetynetwork.api.dto.criminal.response.CriminalDetailResponseDto;
@@ -30,13 +29,13 @@ public class CriminalController {
     private final CriminalService criminalService;
 
     @PostMapping("/write")
-    public ResponseMessage writeCriminal(@RequestParam String id,
-                                                         @RequestParam String name,
-                                                         @RequestParam String age,
-                                                         @RequestParam String crime,
-                                                         @RequestParam String registrationPlace,
-                                                         @RequestParam String address,
-                                                         @RequestParam(required = false) MultipartFile image) {
+    public ResponseDto writeCriminal(@RequestParam String id,
+                                     @RequestParam String name,
+                                     @RequestParam String age,
+                                     @RequestParam String crime,
+                                     @RequestParam String registrationPlace,
+                                     @RequestParam String address,
+                                     @RequestParam(required = false) MultipartFile image) {
         CriminalWriteRequestDto requestDto = CriminalWriteRequestDto.builder()
                 .id(id)
                 .name(name)
@@ -61,12 +60,12 @@ public class CriminalController {
     }
 
     @PatchMapping("/modify")
-    public ResponseMessage modify(@RequestBody CriminalModifyRequestDto criminalModifyRequestDto) {
+    public ResponseDto modify(@RequestBody CriminalModifyRequestDto criminalModifyRequestDto) {
         return criminalService.modify(criminalModifyRequestDto);
     }
 
     @DeleteMapping("/delete")
-    public ResponseMessage delete(@RequestBody DetailId detailId) {
+    public ResponseDto delete(@RequestBody DetailId detailId) {
         return criminalService.delete(detailId);
     }
 }

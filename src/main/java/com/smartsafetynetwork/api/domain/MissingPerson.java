@@ -56,10 +56,10 @@ public class MissingPerson {
     private String address;
 
     @Column(name = "height")
-    private String height;
+    private Double height;
 
     @Column(name = "weight")
-    private String weight;
+    private Double weight;
 
     @Column(name = "physique")
     private String physique;

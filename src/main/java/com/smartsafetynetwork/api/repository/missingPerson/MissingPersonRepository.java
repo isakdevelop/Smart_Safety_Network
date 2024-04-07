@@ -22,6 +22,6 @@ public interface MissingPersonRepository extends JpaRepository<MissingPerson, St
             + "m.id, m.name, m.gender, m.age, m.location, m.date, m.latitude, m.longitude, m.address, "
             + "m.height, m.weight, m.physique, m.faceShape, m.hairColor, m.hairShape, m.cloth,m.imagePath) "
             + "from MissingPerson m "
-            + "where m.id like :missingPersonId")
+            + "where m.id = :missingPersonId")
     MissingPersonDetailResponseDto findDetailList(@Param("missingPersonId") String missingPersonId);;
 }

@@ -27,7 +27,7 @@ public class AdminServiceImpl implements AdminService{
     public ResponseDto signup(AdminRequestDto adminRequestDto) {
         Admin admin = Admin.builder()
                 .policeNumber(adminRequestDto.getPoliceNumber())
-                .password(adminRequestDto.getPassword())
+                .password(passwordEncoder.encode(adminRequestDto.getPassword()))
                 .name(adminRequestDto.getName())
                 .phone(adminRequestDto.getPhone())
                 .company(adminRequestDto.getCompany())
