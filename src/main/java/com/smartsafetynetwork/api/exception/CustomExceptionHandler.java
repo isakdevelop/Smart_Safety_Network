@@ -1,5 +1,6 @@
 package com.smartsafetynetwork.api.exception;
 
+import com.smartsafetynetwork.api.dto.ResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -9,11 +10,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class CustomExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
-    public final ResponseEntity<CustomExceptionModel> handleCustomException(CustomException customException) {
-        CustomExceptionModel customExceptionModel = new CustomExceptionModel(
+    public final ResponseEntity<ResponseDto> handleCustomException(CustomException customException) {
+        ResponseDto responseDto = new ResponseDto(
                 customException.getStatus(),
                 customException.getMessage()
         );
-        return new ResponseEntity<>(customExceptionModel, HttpStatus.valueOf(customException.getStatus()));
+        return new ResponseEntity<>(responseDto, HttpStatus.valueOf(customException.getStatus()));
     }
 }

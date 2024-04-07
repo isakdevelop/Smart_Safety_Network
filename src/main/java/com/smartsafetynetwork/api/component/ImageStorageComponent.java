@@ -14,7 +14,7 @@ public class ImageStorageComponent {
     private String directory;
 
     public String saveImage(MultipartFile image) throws IOException {
-        String fileName = UUID.randomUUID().toString() + ".jpg";
+        String fileName = UUID.randomUUID() + ".jpg";
         String imagePath = directory + "missingPerson/" + fileName;
         Files.write(Paths.get(imagePath), image.getBytes());
         return imagePath;

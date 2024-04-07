@@ -4,5 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class DetailId {
-    private String id;
+    private String user_id;
+    private String want_id;
 }
