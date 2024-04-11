@@ -1,6 +1,6 @@
 package com.smartsafetynetwork.api.dto.admin.response;
 
-import com.smartsafetynetwork.api.dto.ResponseDto;
+import com.smartsafetynetwork.api.common.dto.ResponseDto;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 

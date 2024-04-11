@@ -1,25 +1,16 @@
 package com.smartsafetynetwork.api.domain;
 
-import com.smartsafetynetwork.api.common.BaseEntity;
-import com.smartsafetynetwork.api.domain.value.Role;
+import com.smartsafetynetwork.api.common.model.BaseEntity;
+import com.smartsafetynetwork.api.enums.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity(name = "police")
 @Getter
@@ -36,6 +27,9 @@ public class Admin extends BaseEntity {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
 
     @Column(name = "phone", nullable = false)
     private String phone;

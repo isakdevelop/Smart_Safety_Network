@@ -2,7 +2,7 @@ package com.smartsafetynetwork.api.controller.admin;
 
 import com.smartsafetynetwork.api.common.dto.CommonLoginRequestDto;
 import com.smartsafetynetwork.api.common.dto.CommonLoginResponseDto;
-import com.smartsafetynetwork.api.dto.ResponseDto;
+import com.smartsafetynetwork.api.common.dto.ResponseDto;
 import com.smartsafetynetwork.api.dto.admin.request.AdminRequestDto;
 import com.smartsafetynetwork.api.dto.admin.response.AdminResponseDto;
 import com.smartsafetynetwork.api.service.admin.AdminService;
