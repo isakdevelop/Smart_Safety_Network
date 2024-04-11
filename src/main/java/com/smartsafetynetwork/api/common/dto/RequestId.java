@@ -1,4 +1,4 @@
-package com.smartsafetynetwork.api.common;
+package com.smartsafetynetwork.api.common.dto;
 
 import lombok.Getter;
 
