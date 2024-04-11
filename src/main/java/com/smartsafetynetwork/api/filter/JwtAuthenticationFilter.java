@@ -45,8 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return null;
         }
 
-        String token = authorization.substring(7);
-        return token;
+        return authorization.substring(7);
     }
 
     @Override
@@ -95,7 +94,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.setContext(securityContext);
 
         } catch (Exception exception) {
-            exception.printStackTrace();
+            throw new ServletException("JWT 인증 필터에서 예외 발생", exception);
         }
 
         filterChain.doFilter(request, response);

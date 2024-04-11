@@ -1,12 +1,13 @@
 package com.smartsafetynetwork.api.component;
 
+import com.smartsafetynetwork.api.enums.Error;
+import com.smartsafetynetwork.api.exception.CustomException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,7 @@ public class JWTProvider {
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
         String jwt = Jwts.builder()
+                .setHeaderParam("type", "jwt")
                 .setSubject(id)
                 .setIssuedAt(Date.from(Instant.now()))
                 .setExpiration(Date.from(expiredDate))
@@ -44,10 +46,8 @@ public class JWTProvider {
                     .getSubject();
 
         } catch (Exception exception) {
-            exception.printStackTrace();
-            return null;
+            throw new CustomException(Error.FORBIDDEN.getStatus(), "토큰에 대한 접근 권한이 존재하지 않습니다!");
         }
-
         return subject;
     }
 }
