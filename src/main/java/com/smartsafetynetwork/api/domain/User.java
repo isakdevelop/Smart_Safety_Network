@@ -1,7 +1,7 @@
 package com.smartsafetynetwork.api.domain;
 
-import com.smartsafetynetwork.api.common.BaseEntity;
-import com.smartsafetynetwork.api.domain.value.Role;
+import com.smartsafetynetwork.api.common.model.BaseEntity;
+import com.smartsafetynetwork.api.enums.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -21,7 +21,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 public class User extends BaseEntity {
-
     @Column(name = "username", unique = true, nullable = false)
     private String username;
 
@@ -52,6 +51,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user")
     private List<MissingPersonBoard> missingPersonBoards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<CriminalBoard> criminalBoards = new ArrayList<>();
 
     public void update(String email, String phone) {
         this.email = email;
