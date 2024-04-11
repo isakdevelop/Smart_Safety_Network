@@ -13,10 +13,21 @@ public class ImageStorageComponent {
     @Value("${file.upload.directory}")
     private String directory;
 
-    public String saveImage(MultipartFile image) throws IOException {
-        String fileName = UUID.randomUUID() + ".jpg";
-        String imagePath = directory + "missingPerson/" + fileName;
-        Files.write(Paths.get(imagePath), image.getBytes());
+    public String saveImage(MultipartFile image, String path) throws IOException {
+        String fileName;
+
+        if (image == null || image.isEmpty()) {
+            fileName = "No_Image.png";
+        } else {
+            fileName = UUID.randomUUID() + ".jpg";
+        }
+
+        String imagePath = directory + path + fileName;
+
+        if (image != null && !image.isEmpty()) {
+            Files.write(Paths.get(imagePath), image.getBytes());
+        }
+
         return imagePath;
     }
 }
