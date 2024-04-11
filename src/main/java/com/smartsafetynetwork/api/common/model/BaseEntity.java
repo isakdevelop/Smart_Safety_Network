@@ -1,4 +1,4 @@
-package com.smartsafetynetwork.api.common;
+package com.smartsafetynetwork.api.common.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
