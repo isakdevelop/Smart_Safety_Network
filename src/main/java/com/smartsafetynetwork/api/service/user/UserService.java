@@ -1,7 +1,6 @@
 package com.smartsafetynetwork.api.service.user;
 
-import com.smartsafetynetwork.api.common.RequestId;
-import com.smartsafetynetwork.api.dto.ResponseDto;
+import com.smartsafetynetwork.api.common.dto.ResponseDto;
 import com.smartsafetynetwork.api.dto.user.request.UserRequestDto;
 import com.smartsafetynetwork.api.common.dto.CommonLoginRequestDto;
 import com.smartsafetynetwork.api.common.dto.CommonLoginResponseDto;
@@ -14,9 +13,9 @@ public interface UserService {
 
     ResponseDto modify(UserRequestDto userRequestDto);
 
-    UserResponseDto info(UserRequestDto userRequestDto);
+    UserResponseDto info();
 
-    ResponseDto delete(UserRequestDto userRequestDto);
+    ResponseDto delete();
 
     ResponseDto sendMailPassword(UserRequestDto userRequestDto);
 }

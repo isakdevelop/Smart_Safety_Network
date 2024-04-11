@@ -1,7 +1,7 @@
 package com.smartsafetynetwork.api.service.missingPerson;
 
-import com.smartsafetynetwork.api.common.RequestId;
-import com.smartsafetynetwork.api.dto.ResponseDto;
+import com.smartsafetynetwork.api.common.dto.RequestId;
+import com.smartsafetynetwork.api.common.dto.ResponseDto;
 import com.smartsafetynetwork.api.dto.missingPerson.request.MissingPersonWriteRequestDto;
 import com.smartsafetynetwork.api.dto.missingPerson.response.MissingPersonDetailResponseDto;
 import com.smartsafetynetwork.api.dto.missingPerson.response.MissingPersonListResponseDto;
@@ -13,7 +13,11 @@ public interface MissingPersonService {
 
     Page<MissingPersonListResponseDto> list(Pageable pageable);
 
+    Page<MissingPersonListResponseDto> listByName(Pageable pageable, String name);
+
     MissingPersonDetailResponseDto detail(RequestId requestId);
+
+    ResponseDto modify(MissingPersonWriteRequestDto missingPersonWriteRequestDto);
 
     ResponseDto delete(RequestId requestId);
 }

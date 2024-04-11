@@ -1,6 +1,5 @@
 package com.smartsafetynetwork.api.repository.missingPerson;
 
-import com.smartsafetynetwork.api.common.DetailId;
 import com.smartsafetynetwork.api.domain.MissingPerson;
 import com.smartsafetynetwork.api.dto.missingPerson.response.MissingPersonDetailResponseDto;
 import com.smartsafetynetwork.api.dto.missingPerson.response.MissingPersonListResponseDto;
@@ -18,10 +17,16 @@ public interface MissingPersonRepository extends JpaRepository<MissingPerson, St
             "from MissingPerson m")
     Page<MissingPersonListResponseDto> findAllList(Pageable pageable);
 
-    @Query("select new com.smartsafetynetwork.api.dto.missingPerson.response.MissingPersonDetailResponseDto("
-            + "m.id, m.name, m.gender, m.age, m.location, m.date, m.latitude, m.longitude, m.address, "
-            + "m.height, m.weight, m.physique, m.faceShape, m.hairColor, m.hairShape, m.cloth,m.imagePath) "
-            + "from MissingPerson m "
-            + "where m.id = :missingPersonId")
-    MissingPersonDetailResponseDto findDetailList(@Param("missingPersonId") String missingPersonId);;
+    @Query("select new com.smartsafetynetwork.api.dto.missingPerson.response.MissingPersonListResponseDto(" +
+            "m.id, m.name, m.age, m.gender, m.address, m.imagePath) " +
+            "from MissingPerson m " +
+            "where m.name = :name")
+    Page<MissingPersonListResponseDto> findListByName(Pageable pageable, @Param("name")  String name);
+
+    @Query("select new com.smartsafetynetwork.api.dto.missingPerson.response.MissingPersonDetailResponseDto(" +
+            "m.id, m.name, m.gender, m.age, m.location, m.date, m.latitude, m.longitude, m.address, " +
+            "m.height, m.weight, m.physique, m.faceShape, m.hairColor, m.hairShape, m.cloth, m.imagePath) " +
+            "from MissingPerson m " +
+            "where m.id = :missingPersonId")
+    MissingPersonDetailResponseDto findDetailList(@Param("missingPersonId") String missingPersonId);
 }

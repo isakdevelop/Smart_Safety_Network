@@ -1,6 +1,6 @@
 package com.smartsafetynetwork.api.controller.user;
 
-import com.smartsafetynetwork.api.dto.ResponseDto;
+import com.smartsafetynetwork.api.common.dto.ResponseDto;
 import com.smartsafetynetwork.api.dto.user.request.UserRequestDto;
 import com.smartsafetynetwork.api.common.dto.CommonLoginRequestDto;
 import com.smartsafetynetwork.api.common.dto.CommonLoginResponseDto;
@@ -8,6 +8,7 @@ import com.smartsafetynetwork.api.dto.user.response.UserResponseDto;
 import com.smartsafetynetwork.api.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,9 +31,9 @@ public class UserController {
         return userService.login(commonLoginRequestDto);
     }
 
-    @PostMapping("/info")
-    public UserResponseDto info(@RequestBody UserRequestDto userRequestDto) {
-        return userService.info(userRequestDto);
+    @GetMapping("/info")
+    public UserResponseDto info() {
+        return userService.info();
     }
 
     @PatchMapping("/modify")
@@ -46,8 +47,8 @@ public class UserController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseDto delete(@RequestBody UserRequestDto userRequestDto) {
-        return userService.delete(userRequestDto);
+    public ResponseDto delete() {
+        return userService.delete();
     }
 }
 

@@ -1,22 +1,23 @@
 package com.smartsafetynetwork.api.service.vulnerableRegin;
 
-import com.smartsafetynetwork.api.common.DetailId;
+import com.smartsafetynetwork.api.component.JWTInfo;
 import com.smartsafetynetwork.api.component.ValidAdminComponent;
-import com.smartsafetynetwork.api.common.RequestId;
-import com.smartsafetynetwork.api.dto.ResponseDto;
+import com.smartsafetynetwork.api.common.dto.RequestId;
+import com.smartsafetynetwork.api.common.dto.ResponseDto;
 import com.smartsafetynetwork.api.component.ValidUserComponent;
 import com.smartsafetynetwork.api.domain.VulnerableRegin;
-import com.smartsafetynetwork.api.domain.value.Error;
+import com.smartsafetynetwork.api.enums.Error;
 import com.smartsafetynetwork.api.dto.vulnerableRegin.request.VRModifyRequestDto;
 import com.smartsafetynetwork.api.dto.vulnerableRegin.request.VRWriteRequestDto;
-import com.smartsafetynetwork.api.dto.vulnerableRegin.response.PageDto;
 import com.smartsafetynetwork.api.dto.vulnerableRegin.response.VRDetailResponseDto;
 import com.smartsafetynetwork.api.dto.vulnerableRegin.response.VRListResponseDto;
 import com.smartsafetynetwork.api.exception.CustomException;
 import com.smartsafetynetwork.api.repository.user.UserRepository;
 import com.smartsafetynetwork.api.repository.vulnerableRegin.VulnerableReginRepository;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,6 +27,7 @@ public class VulnerableReginServiceImpl implements VulnerableReginService{
     private final UserRepository userRepository;
     private final ValidUserComponent validUserComponent;
     private final ValidAdminComponent validAdminComponent;
+    private final JWTInfo jwtInfo;
 
     @Override
     public ResponseDto write(VRWriteRequestDto vrWriteRequestDto) {
@@ -35,51 +37,56 @@ public class VulnerableReginServiceImpl implements VulnerableReginService{
                 .address(vrWriteRequestDto.getAddress())
                 .latitude(vrWriteRequestDto.getLatitude())
                 .longitude(vrWriteRequestDto.getLongitude())
-                .user(userRepository.findById(vrWriteRequestDto.getUserId()).get())
+                .user(userRepository.findById(jwtInfo.getUserIdFromJWT())
+                        .orElseThrow(() -> new CustomException(Error.NOT_FOUND.getStatus(), "사용자 정보를 찾을 수 없습니다.")))
                 .build();
 
         vulnerableReginRepository.save(vr);
 
-        return new ResponseDto(0, "취약 지역 등록이 완료되었습니다.");
+        return new ResponseDto(HttpStatus.OK.value(), "취약 지역 등록이 완료되었습니다.");
     }
 
     @Override
-    public VRListResponseDto list(RequestId requestId) {
-        if (validAdminComponent.isAdmin(requestId.getId())) {
+    public Page<VRListResponseDto> list(Pageable pageable) {
+        if (validUserComponent.isUser(jwtInfo.getUserIdFromJWT())) {
+            return vulnerableReginRepository.findUserPost(pageable, jwtInfo.getUserIdFromJWT());
+        }
 
-            List<PageDto> post = vulnerableReginRepository.findAllPost();
-            return new VRListResponseDto(post);
+        if (validAdminComponent.isAdmin(jwtInfo.getUserIdFromJWT())) {
+            return vulnerableReginRepository.findAllPost(pageable);
         }
-        if (userRepository.existsById(requestId.getId())) {
-            List<PageDto> userPost = vulnerableReginRepository.findUserPost(requestId.getId());
-            return new VRListResponseDto(userPost);
-        }
-        throw new CustomException(Error.NOT_FOUND.getStatus(), "조건에 해당하는 게시글이 없습니다.");
+
+        throw new CustomException(Error.NOT_FOUND.getStatus(), "사용자에 대한 정보를 찾을 수 없습니다.");
     }
 
     @Override
-    public VRDetailResponseDto detail(DetailId detailId) {
-        if (validUserComponent.isUser(detailId.getUser_id())) {
-            VulnerableRegin vr = vulnerableReginRepository.findById(detailId.getWant_id())
-                    .orElseThrow(() -> new CustomException(Error.NOT_FOUND.getStatus(), "해당 게시글이 존재하지 않습니다."));
+    public Page<VRListResponseDto> listByRegion(Pageable pageable, String region) {
+        if (validUserComponent.isUser(jwtInfo.getUserIdFromJWT())) {
+            return vulnerableReginRepository.findUserPostByRegion(pageable, region, jwtInfo.getUserIdFromJWT());
+        }
 
-            return vulnerableReginRepository.findMyPost(vr.getId());
-        } throw new CustomException(Error.NOT_FOUND.getStatus(), "사용자를 찾을 수 없습니다.");
+        if (validAdminComponent.isAdmin(jwtInfo.getUserIdFromJWT())) {
+            return vulnerableReginRepository.findAllPostByRegion(pageable, region);
+        }
+
+        throw new CustomException(Error.NOT_FOUND.getStatus(), "사용자에 대한 정보를 찾을 수 없습니다.");
+    }
+
+    @Override
+    public VRDetailResponseDto detail(RequestId requestId) {
+        return vulnerableReginRepository.findUserDetailPost(requestId.getId());
     }
 
     @Override
     public ResponseDto modify(VRModifyRequestDto vrModifyRequestDto) {
-        if (userRepository.existsById(vrModifyRequestDto.getId())) {
-            VulnerableRegin vr = vulnerableReginRepository.findById(vrModifyRequestDto.getId())
-                    .orElseThrow(() -> new CustomException(Error.NOT_FOUND.getStatus(), "해당하는 글이 존재하지 않습니다."));
+        VulnerableRegin vr = vulnerableReginRepository.findById(vrModifyRequestDto.getId())
+                .orElseThrow(() -> new CustomException(Error.NOT_FOUND.getStatus(), "해당하는 글이 존재하지 않습니다."));
 
-            vr.modify(vrModifyRequestDto.getTitle(), vrModifyRequestDto.getContent(), vrModifyRequestDto.getAddress(),
-                    vrModifyRequestDto.getLatitude(), vrModifyRequestDto.getLongitude());
+        vr.modify(vrModifyRequestDto.getTitle(), vrModifyRequestDto.getContent(), vrModifyRequestDto.getAddress(),
+                vrModifyRequestDto.getLatitude(), vrModifyRequestDto.getLongitude());
 
-            return new ResponseDto(0, "게시글 수정이 완료되었습니다.");
-        } else {
-            throw new CustomException(Error.NOT_FOUND.getStatus(), "해당하는 게시글은 존재하지 않습니다.");
-        }
+        vulnerableReginRepository.save(vr);
+        return new ResponseDto(HttpStatus.OK.value(), "게시글 수정이 완료되었습니다.");
     }
 
     @Override
@@ -88,7 +95,7 @@ public class VulnerableReginServiceImpl implements VulnerableReginService{
                 .orElseThrow(() -> new CustomException(Error.NOT_FOUND.getStatus(), "해당 게시글이 존재하지 않습니다."));
 
         vulnerableReginRepository.deleteById(vr.getId());
-        return new ResponseDto(0, "게시글 삭제가 완료되었습니다.");
+        return new ResponseDto(HttpStatus.OK.value(), "게시글 삭제가 완료되었습니다.");
     }
 
 }
