@@ -1,6 +1,6 @@
 package com.smartsafetynetwork.api.domain;
 
-import com.smartsafetynetwork.api.common.BaseEntity;
+import com.smartsafetynetwork.api.common.model.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import lombok.AccessLevel;
