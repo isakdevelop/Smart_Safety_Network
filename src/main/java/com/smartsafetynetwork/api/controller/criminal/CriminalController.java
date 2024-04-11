@@ -1,7 +1,7 @@
 package com.smartsafetynetwork.api.controller.criminal;
 
-import com.smartsafetynetwork.api.common.DetailId;
-import com.smartsafetynetwork.api.dto.ResponseDto;
+import com.smartsafetynetwork.api.common.dto.RequestId;
+import com.smartsafetynetwork.api.common.dto.ResponseDto;
 import com.smartsafetynetwork.api.dto.criminal.request.CriminalModifyRequestDto;
 import com.smartsafetynetwork.api.dto.criminal.request.CriminalWriteRequestDto;
 import com.smartsafetynetwork.api.dto.criminal.response.CriminalDetailResponseDto;
@@ -15,6 +15,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,15 +30,13 @@ public class CriminalController {
     private final CriminalService criminalService;
 
     @PostMapping("/write")
-    public ResponseDto writeCriminal(@RequestParam String id,
-                                     @RequestParam String name,
+    public ResponseDto writeCriminal(@RequestParam String name,
                                      @RequestParam String age,
                                      @RequestParam String crime,
                                      @RequestParam String registrationPlace,
                                      @RequestParam String address,
                                      @RequestParam(required = false) MultipartFile image) {
         CriminalWriteRequestDto requestDto = CriminalWriteRequestDto.builder()
-                .id(id)
                 .name(name)
                 .age(age)
                 .crime(crime)
@@ -54,9 +53,21 @@ public class CriminalController {
         return criminalService.list(pageable);
     }
 
+    @GetMapping("/list/name/{name}")
+    public Page<CriminalListResponseDto> listByName(@PageableDefault(sort = "createAt", direction = Direction.DESC) Pageable pageable,
+                                                    @PathVariable String name) {
+        return criminalService.listByName(pageable, name);
+    }
+
+    @GetMapping("/list/crime/{crime}")
+    public Page<CriminalListResponseDto> listByGuilty(@PageableDefault(sort = "createAt", direction = Direction.DESC) Pageable pageable,
+                                                      @PathVariable String crime) {
+        return criminalService.listByGuilty(pageable, crime);
+    }
+
     @PostMapping("/detail")
-    public CriminalDetailResponseDto detail(@RequestBody DetailId detailId) {
-        return criminalService.detail(detailId);
+    public CriminalDetailResponseDto detail(@RequestBody RequestId requestId) {
+        return criminalService.detail(requestId);
     }
 
     @PatchMapping("/modify")
@@ -65,7 +76,7 @@ public class CriminalController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseDto delete(@RequestBody DetailId detailId) {
-        return criminalService.delete(detailId);
+    public ResponseDto delete(@RequestBody RequestId requestId) {
+        return criminalService.delete(requestId);
     }
 }

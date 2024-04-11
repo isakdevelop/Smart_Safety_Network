@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Builder
 public class CriminalWriteRequestDto {
-    private String id;
     private String name;
     private String age;
     private String crime;

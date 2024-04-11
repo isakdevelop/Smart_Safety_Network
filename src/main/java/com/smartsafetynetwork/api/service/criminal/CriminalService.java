@@ -1,7 +1,7 @@
 package com.smartsafetynetwork.api.service.criminal;
 
-import com.smartsafetynetwork.api.common.DetailId;
-import com.smartsafetynetwork.api.dto.ResponseDto;
+import com.smartsafetynetwork.api.common.dto.RequestId;
+import com.smartsafetynetwork.api.common.dto.ResponseDto;
 import com.smartsafetynetwork.api.dto.criminal.request.CriminalModifyRequestDto;
 import com.smartsafetynetwork.api.dto.criminal.request.CriminalWriteRequestDto;
 import com.smartsafetynetwork.api.dto.criminal.response.CriminalDetailResponseDto;
@@ -14,9 +14,13 @@ public interface CriminalService {
 
     Page<CriminalListResponseDto> list(Pageable pageable);
 
-    CriminalDetailResponseDto detail(DetailId detailId);
+    Page<CriminalListResponseDto> listByName(Pageable pageable, String name);
+
+    Page<CriminalListResponseDto> listByGuilty(Pageable pageable, String guilty);
+
+    CriminalDetailResponseDto detail(RequestId requestId);
 
     ResponseDto modify(CriminalModifyRequestDto criminalModifyRequestDto);
 
-    ResponseDto delete(DetailId detailId);
+    ResponseDto delete(RequestId requestId);
 }
