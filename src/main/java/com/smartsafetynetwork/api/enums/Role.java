@@ -1,4 +1,4 @@
-package com.smartsafetynetwork.api.domain.value;
+package com.smartsafetynetwork.api.enums;
 
 import lombok.RequiredArgsConstructor;
 
