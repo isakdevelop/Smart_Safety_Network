@@ -1,7 +1,6 @@
 package com.smartsafetynetwork.api.config;
 
 import com.smartsafetynetwork.api.filter.JwtAuthenticationFilter;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -29,7 +28,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
+    protected SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
@@ -40,7 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/user/login", "/user/signup", "/user/mail", "/admin/signup", "/admin/login").permitAll()
                         .requestMatchers("/user/info", "/user/modify", "/user/delete").hasRole("USER")
                         .requestMatchers("/criminal/write", "/criminal/modify", "/criminal/delete",
-                                "/mp/write", "/mp/modify", "/mp/delete").hasRole("ADMIN")
+                                "/mp/write", "/mp/modify", "/mp/delete", "cb//list/{name}").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(new FailedAuthenticationEntryPoint()))
