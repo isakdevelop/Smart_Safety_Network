@@ -13,8 +13,8 @@ public class MissingPersonDetailResponseDto {
     private String latitude;
     private String longitude;
     private String address;
-    private String height;
-    private String weight;
+    private Double height;
+    private Double weight;
     private String physique;
     private String faceShape;
     private String hairColor;
@@ -23,9 +23,8 @@ public class MissingPersonDetailResponseDto {
     private String imagePath;
 
     public MissingPersonDetailResponseDto(String id, String name, String gender, int age, String location, String date,
-                                          String latitude, String longitude, String address, String height,
-                                          String weight,
-                                          String physique, String faceShape, String hairColor, String hairShape,
+                                          String latitude, String longitude, String address, Double height,
+                                          Double weight, String physique, String faceShape, String hairColor, String hairShape,
                                           String cloth, String imagePath) {
         this.id = id;
         this.name = name;

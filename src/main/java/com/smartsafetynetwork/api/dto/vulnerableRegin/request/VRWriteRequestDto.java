@@ -9,5 +9,4 @@ public class VRWriteRequestDto {
     private String address;
     private String latitude;
     private String longitude;
-    private String userId;
 }

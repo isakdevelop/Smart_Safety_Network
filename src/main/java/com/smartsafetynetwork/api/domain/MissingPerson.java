@@ -1,14 +1,10 @@
 package com.smartsafetynetwork.api.domain;
 
+import com.smartsafetynetwork.api.common.model.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -16,8 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
@@ -26,11 +20,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Builder
-public class MissingPerson {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
-
+public class MissingPerson extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -82,11 +72,25 @@ public class MissingPerson {
     @OneToMany(mappedBy = "missingPerson")
     private List<MissingPersonBoard> missingPersonBoards = new ArrayList<>();
 
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createAt;
-
-    @LastModifiedDate
-    private LocalDate updateAt;
+    public void modify(String name, String gender, int age, String location, String date, String latitude, String longitude,
+                  String address, Double height, Double weight, String physique, String faceShape, String hairColor,
+                  String hairShape, String cloth, String imagePath) {
+        this.name = name;
+        this.gender = gender;
+        this.age = age;
+        this.location = location;
+        this.date = date;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.address = address;
+        this.height = height;
+        this.weight = weight;
+        this.physique = physique;
+        this.faceShape = faceShape;
+        this.hairColor = hairColor;
+        this.hairShape = hairShape;
+        this.cloth = cloth;
+        this.imagePath = imagePath;
+    }
 
 }

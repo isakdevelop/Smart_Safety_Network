@@ -10,5 +10,4 @@ public class VRModifyRequestDto {
     private String address;
     private String latitude;
     private String longitude;
-    private String name;
 }
