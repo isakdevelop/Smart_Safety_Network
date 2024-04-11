@@ -1,6 +1,6 @@
 package com.smartsafetynetwork.api.exception;
 
-import com.smartsafetynetwork.api.dto.ResponseDto;
+import com.smartsafetynetwork.api.common.dto.ResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
