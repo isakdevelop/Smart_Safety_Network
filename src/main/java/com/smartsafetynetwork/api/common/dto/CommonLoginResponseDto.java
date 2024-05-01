@@ -1,6 +1,6 @@
 package com.smartsafetynetwork.api.common.dto;
 
-import com.smartsafetynetwork.api.enums.Role;
+import com.smartsafetynetwork.api.common.enums.Role;
 import lombok.Getter;
 
 @Getter
