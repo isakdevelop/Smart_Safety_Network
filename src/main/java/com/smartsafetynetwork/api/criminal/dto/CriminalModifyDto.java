@@ -1,9 +1,9 @@
-package com.smartsafetynetwork.api.criminal.dto.request;
+package com.smartsafetynetwork.api.criminal.dto;
 
 import lombok.Getter;
 
 @Getter
-public class CriminalModifyRequestDto {
+public class CriminalModifyDto {
     private String criminal_id;
     private String name;
     private String registrationPlace;

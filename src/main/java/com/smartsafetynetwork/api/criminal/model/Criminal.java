@@ -37,24 +37,25 @@ public class Criminal extends BaseEntity {
     private String crime;
 
     @Column(name = "age")
-    private String age;
+    private Integer age;
 
-    @Column(name = "registration_place")
-    private String registration_place;
+    @Column(name = "registrationPlace")
+    private String registrationPlace;
 
     @Column(name = "address")
     private String address;
 
-    @Column(name = "image_path")
+    @Column(name = "imagePath")
     private String imagePath;
 
     @OneToMany(mappedBy = "criminal", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CriminalBoard> criminalBoards = new ArrayList<>();
 
-    public void modify(String name, String registration_place, String address, String crime) {
+    public void modify(String name, String registrationPlace, String address, String crime, String image) {
         this.name = name;
-        this.registration_place = registration_place;
+        this.registrationPlace = registrationPlace;
         this.address = address;
         this.crime = crime;
+        this.imagePath = image;
     }
 }
