@@ -1,9 +1,10 @@
-package com.smartsafetynetwork.api.vulnerableRegion.dto.request;
+package com.smartsafetynetwork.api.vulnerableRegion.dto;
 
 import lombok.Getter;
 
 @Getter
-public class VRWriteRequestDto {
+public class VRModifyDto {
+    private String id;
     private String title;
     private String content;
     private String address;

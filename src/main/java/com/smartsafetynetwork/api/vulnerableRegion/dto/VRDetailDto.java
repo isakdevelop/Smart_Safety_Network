@@ -1,9 +1,11 @@
-package com.smartsafetynetwork.api.criminalBoard.dto.response;
+package com.smartsafetynetwork.api.vulnerableRegion.dto;
 
+import com.querydsl.core.annotations.QueryProjection;
+import java.time.LocalDateTime;
 import lombok.Getter;
 
 @Getter
-public class CBResponseDto {
+public class VRDetailDto {
     private String id;
     private String title;
     private String content;
@@ -11,10 +13,11 @@ public class CBResponseDto {
     private String latitude;
     private String longitude;
     private String userName;
-    private String crimeName;
 
-    public CBResponseDto(String id, String title, String content, String address, String latitude, String longitude,
-                         String userName, String crimeName) {
+    @QueryProjection
+    public VRDetailDto(String id, String title, String content, String address,
+                       String latitude,
+                       String longitude, String userName) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -22,6 +25,5 @@ public class CBResponseDto {
         this.latitude = latitude;
         this.longitude = longitude;
         this.userName = userName;
-        this.crimeName = crimeName;
     }
 }
