@@ -1,9 +1,9 @@
-package com.smartsafetynetwork.api.auth.dto.request;
+package com.smartsafetynetwork.api.auth.dto;
 
 import lombok.Getter;
 
 @Getter
-public class AuthMailRequestDto {
+public class VerifyMailDto {
     private String email;
     private String password;
 }
