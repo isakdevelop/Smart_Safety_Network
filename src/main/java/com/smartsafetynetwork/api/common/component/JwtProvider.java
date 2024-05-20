@@ -1,7 +1,10 @@
 package com.smartsafetynetwork.api.common.component;
 
 import com.smartsafetynetwork.api.common.enums.Error;
+import com.smartsafetynetwork.api.common.enums.Role;
 import com.smartsafetynetwork.api.common.exception.CustomException;
+import com.smartsafetynetwork.api.auth.model.RefreshToken;
+import com.smartsafetynetwork.api.auth.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -13,19 +16,24 @@ import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.UUID;
 import javax.crypto.SecretKey;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
+@RequiredArgsConstructor
 public class JwtProvider {
     @Value("${secret-key}")
     private String secretKey;
     private static final String AUTH_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
 
-    public String create(String id) {
+    private final RefreshTokenRepository refreshTokenRepository;
+
+    public String createAccessToken(String id, Role role) {
         Instant expiredDate = Instant.now().plus(3, ChronoUnit.HOURS);
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
@@ -33,10 +41,22 @@ public class JwtProvider {
                 .header().add("type", "jwt").and()
                 .subject("access-token")
                 .claim("id", id)
+                .claim("role", role.name())
                 .signWith(key)
                 .issuedAt(Date.from(Instant.now()))
                 .expiration(Date.from(expiredDate))
                 .compact();
+    }
+
+
+    public String createRefreshToken(String id) {
+        String refreshToken = UUID.randomUUID().toString();
+        RefreshToken redis = RefreshToken.builder()
+                .refreshToken(refreshToken)
+                .requestId(id)
+                .build();
+        refreshTokenRepository.save(redis);
+        return refreshToken;
     }
 
     public String validate(String jwt) {

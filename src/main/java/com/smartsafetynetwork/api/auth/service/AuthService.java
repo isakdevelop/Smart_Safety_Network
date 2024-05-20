@@ -1,16 +1,21 @@
 package com.smartsafetynetwork.api.auth.service;
 
-import com.smartsafetynetwork.api.common.dto.CommonLoginRequestDto;
-import com.smartsafetynetwork.api.common.dto.CommonLoginResponseDto;
+import com.smartsafetynetwork.api.auth.dto.FindMailDto;
+import com.smartsafetynetwork.api.auth.dto.LogoutDto;
+import com.smartsafetynetwork.api.auth.dto.LoginRequestDto;
+import com.smartsafetynetwork.api.auth.dto.LoginResponseDto;
 import com.smartsafetynetwork.api.common.dto.ResponseDto;
-import com.smartsafetynetwork.api.auth.dto.request.AuthMailRequestDto;
+import com.smartsafetynetwork.api.auth.dto.VerifyMailDto;
+import com.smartsafetynetwork.api.auth.model.RefreshToken;
 
 public interface AuthService {
-    CommonLoginResponseDto userLogin(CommonLoginRequestDto commonLoginRequestDto);
+    LoginResponseDto login(LoginRequestDto loginRequestDto);
 
-    CommonLoginResponseDto adminLogin(CommonLoginRequestDto commonLoginRequestDto);
+    ResponseDto logout(LogoutDto logoutDto);
 
-    ResponseDto authCheckMail(AuthMailRequestDto authMailRequestDto);
+    ResponseDto findMail(FindMailDto findMailDto);
 
-    ResponseDto authMail(AuthMailRequestDto authMailRequestDto);
+    ResponseDto verifyMail(VerifyMailDto verifyMailDto);
+
+    LoginResponseDto generateAccessToken(RefreshToken refreshToken);
 }

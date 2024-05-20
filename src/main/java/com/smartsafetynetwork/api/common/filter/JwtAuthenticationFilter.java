@@ -1,9 +1,7 @@
 package com.smartsafetynetwork.api.common.filter;
 
 import com.smartsafetynetwork.api.common.component.JwtProvider;
-import com.smartsafetynetwork.api.admin.model.Admin;
 import com.smartsafetynetwork.api.user.model.User;
-import com.smartsafetynetwork.api.admin.repository.AdminRepository;
 import com.smartsafetynetwork.api.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,12 +27,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
-    private final AdminRepository adminRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
+            jwtProvider.addSecurityHeaders(response);
+
             String token = jwtProvider.extractTokenFromHeader(request);
 
             if (token != null) {
@@ -42,15 +41,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 if (id != null) {
                     Optional<User> user = userRepository.findById(id);
-                    Optional<Admin> admin = adminRepository.findById(id);
 
-                    String role = null;
-
-                    if (user.isPresent()) {
-                        role = String.valueOf(user.get().getRole());
-                    } else if (admin.isPresent()) {
-                        role = String.valueOf(admin.get().getRole());
+                    if (user.isEmpty()) {
+                        throw new ServletException("해당 아이디에서 사용자를 찾을 수 없습니다. : " + id);
                     }
+
+                    String role = String.valueOf(user.get().getRole());
 
                     if (role == null) {
                         throw new ServletException("해당 아이디에서 역할을 찾을 수 없습니다. : " + id);
@@ -70,9 +66,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } catch (Exception exception) {
             logger.error("JWT 인증 필터에서 예외 발생", exception);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰이 유효하지 않습니다.");
+            return;
         }
 
-        jwtProvider.addSecurityHeaders(response);
         filterChain.doFilter(request, response);
     }
 }
