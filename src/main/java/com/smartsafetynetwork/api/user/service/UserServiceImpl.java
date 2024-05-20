@@ -5,7 +5,8 @@ import com.smartsafetynetwork.api.common.component.JwtInfo;
 import com.smartsafetynetwork.api.common.component.SendPasswordResetEmail;
 import com.smartsafetynetwork.api.common.enums.Role;
 import com.smartsafetynetwork.api.common.dto.ResponseDto;
-import com.smartsafetynetwork.api.user.dto.response.UserInfoResponseDto;
+import com.smartsafetynetwork.api.user.dto.UserSignUpDto;
+import com.smartsafetynetwork.api.user.dto.response.UserInfoDto;
 import com.smartsafetynetwork.api.user.model.User;
 import com.smartsafetynetwork.api.common.enums.Error;
 import com.smartsafetynetwork.api.user.dto.request.UserRequestDto;
@@ -28,17 +29,15 @@ public class UserServiceImpl implements UserService {
     private final JwtInfo jwtInfo;
 
     @Override
-    public ResponseDto signup(UserRequestDto userRequestDto) {
-        checkDuplicate(userRequestDto.getUsername(), userRequestDto.getEmail(), userRequestDto.getPhone());
+    public ResponseDto signup(UserSignUpDto userSignUpDto) {
+        checkDuplicate(userSignUpDto.getUsername(), userSignUpDto.getEmail(), userSignUpDto.getPhone());
 
         User user = User.builder()
-                .username(userRequestDto.getUsername())
-                .password(passwordEncoder.encode(userRequestDto.getPassword()))
-                .name(userRequestDto.getName())
-                .gender(userRequestDto.getGender())
-                .birthday(userRequestDto.getBirthday())
-                .phone(userRequestDto.getPhone())
-                .email(userRequestDto.getEmail())
+                .username(userSignUpDto.getUsername())
+                .password(passwordEncoder.encode(userSignUpDto.getPassword()))
+                .name(userSignUpDto.getName())
+                .phone(userSignUpDto.getPhone())
+                .email(userSignUpDto.getEmail())
                 .role(Role.ROLE_USER)
                 .type(SignType.SSN)
                 .build();
@@ -60,14 +59,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfoResponseDto info() {
+    public UserInfoDto info() {
         User user = userRepository.findById(jwtInfo.getUserIdFromJWT())
                 .orElseThrow(() -> new CustomException(Error.NOT_FOUND.getStatus(), Error.NOT_FOUND.getMessage()));
 
-        return UserInfoResponseDto.builder()
+        return UserInfoDto.builder()
                 .name(user.getName())
-                .birthday(user.getBirthday())
-                .gender(user.getGender())
                 .email(user.getEmail())
                 .phone(user.getPhone())
                 .status(HttpStatus.OK.value())

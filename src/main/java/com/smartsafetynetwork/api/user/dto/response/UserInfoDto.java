@@ -6,10 +6,8 @@ import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
 @Getter
-public class UserInfoResponseDto extends ResponseDto {
+public class UserInfoDto extends ResponseDto {
     private String name;
-    private String birthday;
-    private String gender;
     private String email;
     private String phone;
 }

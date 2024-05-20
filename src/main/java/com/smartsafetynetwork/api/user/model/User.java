@@ -3,6 +3,7 @@ package com.smartsafetynetwork.api.user.model;
 import com.smartsafetynetwork.api.common.model.BaseEntity;
 import com.smartsafetynetwork.api.criminalBoard.model.CriminalBoard;
 import com.smartsafetynetwork.api.missingPersonBoard.model.MissingPersonBoard;
+import com.smartsafetynetwork.api.police.model.Police;
 import com.smartsafetynetwork.api.vulnerableRegion.model.VulnerableRegin;
 import com.smartsafetynetwork.api.common.enums.Role;
 import com.smartsafetynetwork.api.common.enums.SignType;
@@ -15,6 +16,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -42,12 +44,6 @@ public class User extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "birthday")
-    private String birthday;
-
-    @Column(name = "gender", updatable = false)
-    private String gender;
-
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
@@ -71,6 +67,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CriminalBoard> criminalBoards = new ArrayList<>();
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Police police;
+
     public void update(String email, String phone) {
         this.email = email;
         this.phone = phone;
@@ -78,6 +77,10 @@ public class User extends BaseEntity {
 
     public void changedPasswordByEmail(String password) {
         this.password = password;
+    }
+
+    public void updateRole(Role role) {
+        this.role = role;
     }
 
 }
