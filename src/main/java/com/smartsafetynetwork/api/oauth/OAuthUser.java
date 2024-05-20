@@ -1,4 +1,4 @@
-package com.smartsafetynetwork.api.auth.model;
+package com.smartsafetynetwork.api.oauth;
 
 import com.smartsafetynetwork.api.common.model.BaseEntity;
 import jakarta.persistence.Entity;
