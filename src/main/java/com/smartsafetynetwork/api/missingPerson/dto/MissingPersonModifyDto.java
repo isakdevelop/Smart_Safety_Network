@@ -1,13 +1,9 @@
-package com.smartsafetynetwork.api.missingPerson.dto.request;
+package com.smartsafetynetwork.api.missingPerson.dto;
 
-import lombok.Builder;
 import lombok.Getter;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
-@Builder
-public class MissingPersonWriteRequestDto {
-    private String id;
+public class MissingPersonModifyDto {
     private String name;
     private String gender;
     private int age;
@@ -23,5 +19,5 @@ public class MissingPersonWriteRequestDto {
     private String hairColor;
     private String hairShape;
     private String cloth;
-    private MultipartFile image;
+    private String missingPersonId;
 }
