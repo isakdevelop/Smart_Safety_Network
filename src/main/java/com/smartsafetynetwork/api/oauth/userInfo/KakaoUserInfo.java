@@ -33,6 +33,10 @@ public class KakaoUserInfo extends Oauth2UserInfo {
     @Override
     public String getMobile() {
         Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
-        return account == null ? null : (String) account.get("phone_number");
+        String kakaoPhone = (String) account.get("phone_number");
+
+        String phone = kakaoPhone.startsWith("+82") ?
+                kakaoPhone = kakaoPhone.replace("+82", "0").substring(0).replace(" ", "") : kakaoPhone;
+        return account == null ? null : phone;
     }
 }
