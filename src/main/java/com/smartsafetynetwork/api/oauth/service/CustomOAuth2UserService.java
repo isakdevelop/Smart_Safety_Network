@@ -14,6 +14,7 @@ import com.smartsafetynetwork.api.user.model.User;
 import com.smartsafetynetwork.api.user.repository.UserRepository;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -27,6 +28,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
@@ -35,7 +37,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(request);
-        System.out.println(oAuth2User);
+        log.info(oAuth2User);
 
         String registrationId = request.getClientRegistration().getRegistrationId();
         Oauth2UserInfo oauth2UserInfo;
@@ -48,6 +50,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             oauth2UserInfo = new KakaoUserInfo(oAuth2User.getAttributes());
         } else {
             throw new CustomException(HttpStatus.NOT_FOUND.value(), "지원하지 않는 소셜 로그인입니다.");
+        }
+
+        if(userRepository.existsByPhone(oauth2UserInfo.getMobile())) {
+            throw new CustomException(HttpStatus.CONFLICT.value(), "이미 존재하는 회원입니다.");
         }
 
         User oauthUser = userRepository.findByEmail(oauth2UserInfo.getEmail()).orElseGet(() -> {
