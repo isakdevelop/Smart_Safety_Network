@@ -58,6 +58,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         User oauthUser = userRepository.findByEmail(oauth2UserInfo.getEmail()).orElseGet(() -> {
             User user = User.builder()
+                    .id(oauth2UserInfo.getId())
                     .username(oauth2UserInfo.getProvider() + "_" + UUID.randomUUID())
                     .password(passwordEncoder.encode(UUID.randomUUID().toString()))
                     .email(oauth2UserInfo.getEmail())
