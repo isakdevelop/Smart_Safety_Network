@@ -4,6 +4,7 @@ import com.smartsafetynetwork.api.common.model.BaseEntity;
 import com.smartsafetynetwork.api.missingPersonBoard.model.MissingPersonBoard;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
@@ -17,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
@@ -24,6 +26,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
+@DynamicUpdate
 @Builder
 public class MissingPerson extends BaseEntity {
     @Id
@@ -45,35 +48,12 @@ public class MissingPerson extends BaseEntity {
     @Column(name = "date")
     private String date;
 
-    @Column(name = "latitude")
-    private String latitude;
+    @Embedded
+    private Address address;
 
-    @Column(name = "longitude")
-    private String longitude;
+    @Embedded
+    private Appearance appearance;
 
-    @Column(name = "address")
-    private String address;
-
-    @Column(name = "height")
-    private Double height;
-
-    @Column(name = "weight")
-    private Double weight;
-
-    @Column(name = "physique")
-    private String physique;
-
-    @Column(name = "faceShape")
-    private String faceShape;
-
-    @Column(name = "hairColor")
-    private String hairColor;
-
-    @Column(name = "hairShape")
-    private String hairShape;
-
-    @Column(name = "cloth")
-    private String cloth;
 
     @Column(name = "image_path")
     private String imagePath;
@@ -89,16 +69,20 @@ public class MissingPerson extends BaseEntity {
         this.age = age;
         this.location = location;
         this.date = date;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.address = address;
-        this.height = height;
-        this.weight = weight;
-        this.physique = physique;
-        this.faceShape = faceShape;
-        this.hairColor = hairColor;
-        this.hairShape = hairShape;
-        this.cloth = cloth;
+        this.address = Address.builder()
+                .latitude(latitude)
+                .longitude(longitude)
+                .address(address)
+                .build();
+        this.appearance = Appearance.builder()
+                .height(height)
+                .weight(weight)
+                .physique(physique)
+                .faceShape(faceShape)
+                .hairColor(hairColor)
+                .hairShape(hairShape)
+                .cloth(cloth)
+                .build();
         this.imagePath = imagePath;
     }
 
